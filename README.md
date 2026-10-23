@@ -1,101 +1,43 @@
-# AjayKumar N — Software Developer Portfolio
+# Ajay Kumar N — Developer Portfolio
 
-A professional, responsive portfolio for AjayKumar N, showcasing public GitHub projects, full-stack development work, backend applications, and technologies used across modern software development.
+A responsive React and Vite portfolio for Ajay Kumar N, featuring selected full-stack projects, confidential professional case studies, technical skills, and contact links.
 
-## About
+## Run locally
 
-This portfolio presents a focused overview of software development experience across:
+Requires Node.js 20.19+ or 22.12+.
 
-- React and modern JavaScript frontend development
-- Node.js and Express-based applications
-- ASP.NET Core MVC and Web API development
-- C# backend solutions
-- Microsoft SQL Server 2014 and database-backed workflows
-- AI-assisted interfaces and API-driven applications
+```powershell
+npm install
+npm run dev
+```
 
-The site is designed to communicate technical capability clearly while keeping confidential organization, client, and internal workflow details private.
+Vite prints the local development URL after the server starts.
 
-## Portfolio Highlights
+## Build
 
-### Selected GitHub Projects
+```powershell
+npm run build
+npm run preview
+```
 
-The portfolio includes public projects demonstrating:
+The production site is generated in `dist/` and can be deployed to static hosting such as Vercel, Netlify, GitHub Pages, or Azure Static Web Apps.
 
-- Full-stack MERN food delivery applications
-- React + Vite AI summarization experiences
-- API-driven movie applications
-- React-based weather applications
-
-Project links point to the corresponding public repositories and deployed applications.
-
-### Professional Backend Work
-
-Two confidential case studies are included to demonstrate major backend applications:
-
-- Centralized software license management
-- End-to-end service request and support management
-
-Organization names, client details, and sensitive internal workflows are intentionally omitted. Detailed technical context is available on request when appropriate.
-
-### Technology Toolkit
-
-The portfolio highlights practical experience across:
-
-- Frontend: React, JavaScript, HTML, CSS, Vite
-- Backend: Node.js, Express, ASP.NET Core, C#, Web APIs
-- Data: MongoDB and Microsoft SQL Server 2014
-- Development tools: Visual Studio and modern frontend tooling
-
-## Project Structure
+## Project structure
 
 ```text
 portfolio/
-├── index.html          # Portfolio content and page structure
-├── styles.css          # Responsive design system and animations
-├── script.js           # Scroll effects and navigation behavior
-└── README.md           # Project documentation
+├── index.html
+├── package.json
+├── vite.config.js
+└── src/
+    ├── App.jsx
+    ├── main.jsx
+    └── style.css
 ```
 
-## Run Locally
+## Content and accessibility
 
-The portfolio is a static website and does not require a build step or package installation.
-
-1. Open `index.html` directly in a browser, or
-2. Serve the folder using any static web server, such as:
-
-```powershell
-python -m http.server 8000
-```
-
-Then open `http://localhost:8000`.
-
-## Deployment
-
-The site can be hosted on any static hosting platform, including:
-
-- GitHub Pages
-- Netlify
-- Vercel
-- Azure Static Web Apps
-- Any standard web server
-
-When deploying, ensure the `index.html`, `styles.css`, and `script.js` files are included in the published directory.
-
-## Responsive and Accessible Design
-
-- Responsive layouts for desktop, tablet, and mobile devices
-- Reduced-motion support for users who prefer less animation
-- Semantic page structure and keyboard-friendly navigation
-- Accessible labels and descriptive links
-- Responsive typography and content hierarchy
-
-## Content Guidelines
-
-- Only public, verified information is presented in the portfolio.
-- Confidential employer, client, and internal workflow details are omitted.
-- Project descriptions communicate technical scope without exposing private information.
-- Public GitHub links should be updated when repository names, deployments, or project details change.
-
-## License
-
-This portfolio source is provided for personal portfolio use. All public project links and external resources remain subject to their respective owners' licenses and terms.
+- Public project links point to Ajay's GitHub repositories and deployments.
+- Professional case studies omit confidential organization and client details.
+- Layouts adapt for mobile, tablet, and desktop, with keyboard focus states and reduced-motion support.
+- Update project links and portfolio content in `src/App.jsx`.
