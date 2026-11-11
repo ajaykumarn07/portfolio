@@ -91,7 +91,7 @@ const projects = [
       'Built a complete ordering flow spanning customer experience, admin workflows, and backend services to make the process feel seamless and operationally clear.',
     stack: ['React', 'Node.js', 'Express', 'MongoDB'],
     repo: 'https://github.com/ajaykumarn07/mern-food-delivery',
-    live: 'https://mern-food-delivery-frontend.onrender.com',
+    live: 'https://namma-eats-food-delivery.vercel.app/',
     theme: 'food',
     Visual: FoodArt,
   },
