@@ -4,11 +4,49 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f4f3ed" />
+    <meta name="robots" content="index, follow" />
     <meta
       name="description"
       content="Ajay Kumar N is a software developer building reliable .NET applications, APIs, and thoughtful React experiences."
     />
+    <link rel="canonical" href="https://ajaykumarn.dev/" />
+
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ajaykumarn.dev/" />
+    <meta property="og:title" content="Ajay Kumar N — Software Developer" />
+    <meta property="og:description" content="Building reliable .NET applications, APIs, and thoughtful React interfaces. Full-stack developer based in India." />
+    <meta property="og:image" content="https://ajaykumarn.dev/og-image.png" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Ajay Kumar N — Software Developer" />
+    <meta name="twitter:description" content="Building reliable .NET applications, APIs, and thoughtful React interfaces." />
+    <meta name="twitter:image" content="https://ajaykumarn.dev/og-image.png" />
+
     <title>Ajay Kumar N — Software Developer</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Anti-FOUC theme initializer -->
+    <script>
+      (function() {
+        try {
+          var saved = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var theme = saved || (prefersDark ? 'dark' : 'light');
+          document.documentElement.setAttribute('data-theme', theme);
+          var metaTheme = document.querySelector('meta[name="theme-color"]');
+          if (metaTheme) {
+            metaTheme.setAttribute('content', theme === 'dark' ? '#11120f' : '#f4f3ed');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
