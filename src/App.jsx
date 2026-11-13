@@ -449,7 +449,7 @@ function Contact() {
     <section className="contact section-wrap" id="contact">
       <div className="section-topline"><span>05 / YOUR TURN</span><span>OPEN TO GOOD CONVERSATIONS</span></div>
       <div ref={ref} className={`contact-main reveal${inView ? ' in-view' : ''}`}><p className="eyebrow">HAVE SOMETHING IN MIND?</p><h2>Let’s build<br />something <span>that actually helps.</span></h2><div className="contact-aside"><p>Whether it’s a product idea, a workflow issue, or a full-stack build opportunity, I’m open to thoughtful conversations and practical software work.</p><a className="button button-lime" href="mailto:ajaykumarn0704@gmail.com">Say hello <ArrowIcon /></a></div></div>
-      <div className="contact-socials"><a href="mailto:ajaykumarn0704@gmail.com" aria-label="Send me an email">EMAIL <ArrowIcon /></a><a href="https://www.linkedin.com/in/ajaykumarn/" target="_blank" rel="noopener noreferrer" aria-label="Connect on LinkedIn">LINKEDIN <ArrowIcon /></a><a href="https://github.com/ajaykumarn07" target="_blank" rel="noopener noreferrer" aria-label="View my GitHub profile">GITHUB <ArrowIcon /></a></div>
+      <div className="contact-socials"><a href="mailto:ajaykumarn0704@gmail.com" aria-label="Send me an email">EMAIL <ArrowIcon /></a><a href="https://www.linkedin.com/in/ajaykumarn07/" target="_blank" rel="noopener noreferrer" aria-label="Connect on LinkedIn">LINKEDIN <ArrowIcon /></a><a href="https://github.com/ajaykumarn07" target="_blank" rel="noopener noreferrer" aria-label="View my GitHub profile">GITHUB <ArrowIcon /></a></div>
     </section>
   );
 }
