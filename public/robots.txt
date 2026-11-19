@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ajaykumarn-portfolio.vercel.app/sitemap.xml

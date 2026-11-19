@@ -1,171 +1,166 @@
 /**
  * generate-assets.mjs
- * Generates all static image assets:
- *   public/og-image.png        (1200 × 630)
- *   public/apple-touch-icon.png (180 × 180)
- *   public/favicon.ico          (32 × 32, ICO via PNG buffer)
+ *
+ * Builds the static image assets in /public:
+ *   og-image.png         1200 x 630  (link previews)
+ *   apple-touch-icon.png  180 x 180
+ *   favicon.svg / favicon.ico
+ *
+ * Text is converted to vector outlines from the real font files in
+ * @fontsource, so the output is identical on every machine. It never depends
+ * on fonts installed on the computer that runs the script (the cause of the
+ * old broken share image).
+ *
+ * Run with: npm run assets
  */
 
 import sharp from 'sharp';
-import { readFileSync, writeFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import path from 'path';
+import opentype from 'opentype.js';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+import { profile } from '../src/content.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const publicDir = path.resolve(__dirname, '../public');
+const here = path.dirname(fileURLToPath(import.meta.url));
+const root = path.resolve(here, '..');
+const publicDir = path.join(root, 'public');
 
-// ─── Colour tokens ──────────────────────────────────────────────────────────
-const INK    = '#20211e';
-const PAPER  = '#f4f3ed';
-const BLUE   = '#254dde';
-const LIME   = '#d5f36a';
-const MUTED  = '#72736b';
+// ─── Colour tokens (keep in sync with src/style.css) ────────────────────────
+const INK = '#20211e';
+const PAPER = '#f4f3ed';
+const BLUE = '#254dde';
+const LIME = '#d5f36a';
+const MUTED = '#5a5b55';
 const VIOLET = '#5651a0';
 
-// ─── OG IMAGE  1200 × 630 ───────────────────────────────────────────────────
+// ─── Fonts ──────────────────────────────────────────────────────────────────
+function loadFont(pkg, file) {
+  const buf = readFileSync(path.join(root, 'node_modules/@fontsource', pkg, 'files', file));
+  return opentype.parse(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength));
+}
+
+const grotesk400 = loadFont('space-grotesk', 'space-grotesk-latin-400-normal.woff');
+const grotesk600 = loadFont('space-grotesk', 'space-grotesk-latin-600-normal.woff');
+const grotesk700 = loadFont('space-grotesk', 'space-grotesk-latin-700-normal.woff');
+const mono400 = loadFont('dm-mono', 'dm-mono-latin-400-normal.woff');
+const mono500 = loadFont('dm-mono', 'dm-mono-latin-500-normal.woff');
+
+/**
+ * Lay out `text` as an SVG <path>.
+ * `tracking` is extra space after every glyph in px (negative tightens).
+ * `anchor` is 'start' | 'middle' | 'end' relative to x.
+ */
+function textPath(font, text, { x, y, size, tracking = 0, anchor = 'start', fill, opacity = 1 }) {
+  const scale = size / font.unitsPerEm;
+  const glyphs = font.stringToGlyphs(text);
+
+  let width = 0;
+  glyphs.forEach((g, i) => {
+    width += g.advanceWidth * scale + tracking;
+    if (i < glyphs.length - 1) width += font.getKerningValue(g, glyphs[i + 1]) * scale;
+  });
+  width -= tracking; // no trailing space
+
+  let cursor = anchor === 'middle' ? x - width / 2 : anchor === 'end' ? x - width : x;
+  const parts = [];
+  glyphs.forEach((g, i) => {
+    parts.push(g.getPath(cursor, y, size).toPathData(2));
+    cursor += g.advanceWidth * scale + tracking;
+    if (i < glyphs.length - 1) cursor += font.getKerningValue(g, glyphs[i + 1]) * scale;
+  });
+
+  return `<path d="${parts.join(' ')}" fill="${fill}"${opacity === 1 ? '' : ` fill-opacity="${opacity}"`}/>`;
+}
+
+// ─── OG image 1200 x 630 ────────────────────────────────────────────────────
+const label = `${profile.role.toUpperCase()}  /  ${profile.location.toUpperCase()}`;
+
 const ogSvg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
     <pattern id="grid" width="38" height="38" patternUnits="userSpaceOnUse">
-      <path d="M 38 0 L 0 0 0 38" fill="none" stroke="${INK}" stroke-width="0.6" stroke-opacity="0.09"/>
+      <path d="M 38 0 L 0 0 0 38" fill="none" stroke="${INK}" stroke-width="0.6" stroke-opacity="0.08"/>
     </pattern>
   </defs>
 
-  <!-- Background -->
   <rect width="1200" height="630" fill="${PAPER}"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect x="0" y="0" width="8" height="630" fill="${BLUE}"/>
+  <rect x="0" y="622" width="1200" height="8" fill="${LIME}"/>
 
-  <!-- Subtle noise grid -->
-  <rect width="1200" height="630" fill="url(#grid)" opacity="0.6"/>
+  <!-- Orbit decoration, kept to the right edge so it never fights the text -->
+  <circle cx="1010" cy="315" r="250" fill="none" stroke="${INK}" stroke-width="1" stroke-opacity="0.10"/>
+  <circle cx="1010" cy="315" r="170" fill="none" stroke="${INK}" stroke-width="1" stroke-dasharray="6 6" stroke-opacity="0.12"/>
+  <circle cx="1010" cy="315" r="92" fill="${VIOLET}" fill-opacity="0.10"/>
+  <circle cx="1010" cy="315" r="7" fill="${BLUE}"/>
+  <circle cx="1128" cy="170" r="5" fill="${LIME}"/>
+  <circle cx="880" cy="455" r="4" fill="${INK}" fill-opacity="0.3"/>
 
-  <!-- Left accent bar -->
-  <rect x="0" y="0" width="6" height="630" fill="${BLUE}"/>
+  <!-- Monogram -->
+  <rect x="72" y="64" width="104" height="104" rx="4" fill="${INK}"/>
+  ${textPath(grotesk700, 'AK', { x: 124, y: 132, size: 54, tracking: -3, anchor: 'middle', fill: PAPER })}
+  <circle cx="166" cy="78" r="7" fill="${BLUE}"/>
 
-  <!-- Bottom accent bar -->
-  <rect x="0" y="594" width="1200" height="6" fill="${LIME}" opacity="0.7"/>
+  <!-- Role label and divider: separated by clear space from the headline -->
+  ${textPath(mono500, label, { x: 72, y: 232, size: 15, tracking: 2.4, fill: MUTED })}
+  <line x1="72" y1="254" x2="520" y2="254" stroke="${INK}" stroke-width="1" stroke-opacity="0.2"/>
 
-  <!-- Abstract orbit circle (decorative) -->
-  <circle cx="980" cy="315" r="260" fill="none" stroke="${INK}" stroke-width="1" stroke-opacity="0.1"/>
-  <circle cx="980" cy="315" r="180" fill="none" stroke="${INK}" stroke-width="1" stroke-dasharray="6 6" stroke-opacity="0.12"/>
-  <circle cx="980" cy="315" r="95" fill="${VIOLET}" fill-opacity="0.08"/>
+  <!-- Headline (same words as the site hero) -->
+  ${textPath(grotesk600, 'I build dependable', { x: 72, y: 346, size: 76, tracking: -3.6, fill: INK })}
+  ${textPath(grotesk600, 'software that', { x: 72, y: 422, size: 76, tracking: -3.6, fill: INK })}
+  ${textPath(grotesk400, 'removes friction.', { x: 72, y: 498, size: 76, tracking: -3.6, fill: MUTED })}
 
-  <!-- Dot accents -->
-  <circle cx="980" cy="315" r="6" fill="${BLUE}"/>
-  <circle cx="1125" cy="195" r="4" fill="${LIME}"/>
-  <circle cx="845" cy="438" r="3" fill="${INK}" opacity="0.3"/>
-
-  <!-- Monogram block -->
-  <rect x="68" y="68" width="118" height="118" rx="4" fill="${INK}"/>
-  <text x="127" y="148" font-family="'Space Grotesk', 'DM Sans', system-ui, sans-serif"
-        font-size="62" font-weight="700" letter-spacing="-5" fill="${PAPER}" text-anchor="middle">AK</text>
-  <circle cx="174" cy="82" r="8" fill="${BLUE}"/>
-
-  <!-- Status pill -->
-  <rect x="68" y="216" width="148" height="26" rx="13" fill="${LIME}"/>
-  <circle cx="88" cy="229" r="4" fill="#4a8c32"/>
-  <text x="100" y="234" font-family="'DM Mono', 'Courier New', monospace"
-        font-size="10" font-weight="500" letter-spacing="1.5" fill="${INK}">AVAILABLE</text>
-
-  <!-- Main headline -->
-  <text x="68" y="380" font-family="'Space Grotesk', 'DM Sans', system-ui, sans-serif"
-        font-size="88" font-weight="600" letter-spacing="-5" fill="${INK}">I make</text>
-  <text x="68" y="470" font-family="'Space Grotesk', 'DM Sans', system-ui, sans-serif"
-        font-size="88" font-weight="400" letter-spacing="-5" fill="${MUTED}">software.</text>
-
-  <!-- Role label -->
-  <text x="68" y="310" font-family="'DM Mono', 'Courier New', monospace"
-        font-size="13" letter-spacing="3" fill="${MUTED}">SOFTWARE DEVELOPER  /  INDIA</text>
-
-  <!-- Divider line -->
-  <line x1="68" y1="336" x2="420" y2="336" stroke="${INK}" stroke-width="1" stroke-opacity="0.18"/>
-
-  <!-- Tagline -->
-  <text x="68" y="554" font-family="'DM Mono', 'Courier New', monospace"
-        font-size="12" letter-spacing="1.5" fill="${MUTED}">.NET  ·  React  ·  Node.js  ·  SQL Server  ·  MongoDB</text>
-
-  <!-- URL watermark -->
-  <text x="1132" y="554" font-family="'DM Mono', 'Courier New', monospace"
-        font-size="11" letter-spacing="1" fill="${MUTED}" text-anchor="end">ajaykumarn.dev</text>
-
-  <!-- Plus decorations -->
-  <text x="490" y="90" font-family="'DM Mono', monospace" font-size="20" fill="${BLUE}" opacity="0.5">+</text>
-  <text x="560" y="590" font-family="'DM Mono', monospace" font-size="16" fill="${INK}" opacity="0.2">+</text>
+  <!-- Footer line -->
+  ${textPath(mono400, '.NET  ·  React  ·  Node.js  ·  SQL Server  ·  MongoDB', { x: 72, y: 572, size: 15, tracking: 1.2, fill: MUTED })}
+  ${textPath(mono400, new URL(profile.siteUrl).hostname, { x: 1128, y: 572, size: 15, tracking: 1, anchor: 'end', fill: MUTED })}
 </svg>
 `.trim();
 
-// ─── APPLE TOUCH ICON  180 × 180 ────────────────────────────────────────────
+// ─── Apple touch icon 180 x 180 ─────────────────────────────────────────────
 const appleSvg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
-  <rect width="180" height="180" rx="38" fill="${INK}"/>
-  <text x="90" y="121" font-family="'Space Grotesk','DM Sans',system-ui,sans-serif"
-        font-size="72" font-weight="700" letter-spacing="-6"
-        fill="${PAPER}" text-anchor="middle">AK</text>
-  <circle cx="143" cy="34" r="12" fill="${BLUE}"/>
-  <circle cx="143" cy="34" r="6"  fill="${PAPER}"/>
+  <rect width="180" height="180" fill="${INK}"/>
+  ${textPath(grotesk700, 'AK', { x: 90, y: 118, size: 76, tracking: -5, anchor: 'middle', fill: PAPER })}
+  <circle cx="146" cy="34" r="12" fill="${BLUE}"/>
+  <circle cx="146" cy="34" r="5" fill="${PAPER}"/>
 </svg>
 `.trim();
 
-// ─── FAVICON  32 × 32 ───────────────────────────────────────────────────────
+// ─── Favicon 32 x 32 (also written as favicon.svg) ──────────────────────────
 const faviconSvg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="5" fill="${INK}"/>
-  <text x="16" y="23" font-family="'Space Grotesk','DM Sans',system-ui,sans-serif"
-        font-size="16" font-weight="700" letter-spacing="-1.5"
-        fill="${PAPER}" text-anchor="middle">AK</text>
-  <circle cx="27" cy="6" r="4" fill="${BLUE}"/>
+  <rect width="32" height="32" rx="6" fill="${INK}"/>
+  ${textPath(grotesk700, 'AK', { x: 16, y: 22.5, size: 16, tracking: -1, anchor: 'middle', fill: PAPER })}
+  <circle cx="26.5" cy="6" r="3.5" fill="${BLUE}"/>
 </svg>
 `.trim();
 
-// ─── Render helpers ──────────────────────────────────────────────────────────
-async function svgToPng(svgString, width, height, outPath) {
-  const buf = Buffer.from(svgString);
-  await sharp(buf)
-    .resize(width, height)
-    .png({ compressionLevel: 9, adaptiveFiltering: true })
-    .toFile(outPath);
-  console.log(`✓  ${outPath}`);
+// ─── ICO container around one PNG ───────────────────────────────────────────
+function pngToIco(png) {
+  const header = Buffer.alloc(22);
+  header.writeUInt16LE(0, 0); // reserved
+  header.writeUInt16LE(1, 2); // type: icon
+  header.writeUInt16LE(1, 4); // image count
+  header.writeUInt8(32, 6); // width
+  header.writeUInt8(32, 7); // height
+  header.writeUInt8(0, 8); // palette
+  header.writeUInt8(0, 9); // reserved
+  header.writeUInt16LE(1, 10); // planes
+  header.writeUInt16LE(32, 12); // bits per pixel
+  header.writeUInt32LE(png.length, 14); // image size
+  header.writeUInt32LE(22, 18); // image offset
+  return Buffer.concat([header, png]);
 }
 
-// ICO = raw PNG bytes wrapped in the ICO container format (32×32 only)
-async function pngToIco(pngPath, icoPath) {
-  const pngBuf = readFileSync(pngPath);
-  const pngSize = pngBuf.length;
-
-  // ICO header (6 bytes) + 1 directory entry (16 bytes) + PNG data
-  const ico = Buffer.alloc(6 + 16 + pngSize);
-  let offset = 0;
-
-  // ICONDIR
-  ico.writeUInt16LE(0,    offset); offset += 2; // Reserved
-  ico.writeUInt16LE(1,    offset); offset += 2; // Type = 1 (icon)
-  ico.writeUInt16LE(1,    offset); offset += 2; // Count = 1
-
-  // ICONDIRENTRY
-  ico.writeUInt8(32,      offset); offset += 1; // Width
-  ico.writeUInt8(32,      offset); offset += 1; // Height
-  ico.writeUInt8(0,       offset); offset += 1; // Color count (0 = 256+)
-  ico.writeUInt8(0,       offset); offset += 1; // Reserved
-  ico.writeUInt16LE(1,    offset); offset += 2; // Planes
-  ico.writeUInt16LE(32,   offset); offset += 2; // Bit count
-  ico.writeUInt32LE(pngSize,     offset); offset += 4; // Size of image data
-  ico.writeUInt32LE(6 + 16,      offset); offset += 4; // Offset to image data
-
-  // PNG bytes
-  pngBuf.copy(ico, offset);
-
-  writeFileSync(icoPath, ico);
-  console.log(`✓  ${icoPath}`);
+async function render(svg, width, height) {
+  return sharp(Buffer.from(svg)).resize(width, height).png({ compressionLevel: 9 }).toBuffer();
 }
 
-// ─── Main ────────────────────────────────────────────────────────────────────
-const faviconPngPath = path.join(publicDir, '_favicon32.png'); // temp
+const out = (name) => path.join(publicDir, name);
 
-await svgToPng(ogSvg,     1200, 630, path.join(publicDir, 'og-image.png'));
-await svgToPng(appleSvg,  180,  180, path.join(publicDir, 'apple-touch-icon.png'));
-await svgToPng(faviconSvg, 32,   32, faviconPngPath);
-await pngToIco(faviconPngPath, path.join(publicDir, 'favicon.ico'));
+writeFileSync(out('og-image.png'), await render(ogSvg, 1200, 630));
+writeFileSync(out('apple-touch-icon.png'), await render(appleSvg, 180, 180));
+writeFileSync(out('favicon.svg'), faviconSvg + '\n');
+writeFileSync(out('favicon.ico'), pngToIco(await render(faviconSvg, 32, 32)));
 
-// Remove temp file
-import { unlinkSync } from 'fs';
-unlinkSync(faviconPngPath);
-
-console.log('\nAll assets generated in /public ✅');
+console.log('Wrote og-image.png, apple-touch-icon.png, favicon.svg, favicon.ico to public/');

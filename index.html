@@ -4,45 +4,67 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f4f3ed" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="robots" content="index, follow" />
+
+    <title>Ajay Kumar N — Full-Stack Software Developer</title>
     <meta
       name="description"
-      content="Ajay Kumar N is a software developer building reliable .NET applications, APIs, and thoughtful React experiences."
+      content="Ajay Kumar N is a full-stack developer in India building ASP.NET Core and SQL Server business applications, plus React and Node.js projects."
     />
-    <link rel="canonical" href="https://ajaykumarn.dev/" />
+    <link rel="canonical" href="https://ajaykumarn-portfolio.vercel.app/" />
 
-    <!-- Open Graph / Social Sharing -->
+    <!-- Open Graph / social sharing -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://ajaykumarn.dev/" />
-    <meta property="og:title" content="Ajay Kumar N — Software Developer" />
-    <meta property="og:description" content="Building reliable .NET applications, APIs, and thoughtful React interfaces. Full-stack developer based in India." />
-    <meta property="og:image" content="https://ajaykumarn.dev/og-image.png" />
+    <meta property="og:site_name" content="Ajay Kumar N" />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:url" content="https://ajaykumarn-portfolio.vercel.app/" />
+    <meta property="og:title" content="Ajay Kumar N — Full-Stack Software Developer" />
+    <meta property="og:description" content="ASP.NET Core and SQL Server business applications, plus React and Node.js projects." />
+    <meta property="og:image" content="https://ajaykumarn-portfolio.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Ajay Kumar N: I build dependable software that removes friction." />
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Ajay Kumar N — Software Developer" />
-    <meta name="twitter:description" content="Building reliable .NET applications, APIs, and thoughtful React interfaces." />
-    <meta name="twitter:image" content="https://ajaykumarn.dev/og-image.png" />
+    <meta name="twitter:title" content="Ajay Kumar N — Full-Stack Software Developer" />
+    <meta name="twitter:description" content="ASP.NET Core and SQL Server business applications, plus React and Node.js projects." />
+    <meta name="twitter:image" content="https://ajaykumarn-portfolio.vercel.app/og-image.png" />
+    <meta name="twitter:image:alt" content="Ajay Kumar N: I build dependable software that removes friction." />
 
-    <title>Ajay Kumar N — Software Developer</title>
-
-    <!-- Favicon -->
+    <!-- Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    <!-- Anti-FOUC theme initializer -->
+    <!-- Structured data: tells search engines who this page is about -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Ajay Kumar N",
+        "jobTitle": "Full-Stack Software Developer",
+        "url": "https://ajaykumarn-portfolio.vercel.app/",
+        "image": "https://ajaykumarn-portfolio.vercel.app/og-image.png",
+        "address": { "@type": "PostalAddress", "addressCountry": "IN" },
+        "sameAs": [
+          "https://github.com/ajaykumarn07",
+          "https://www.linkedin.com/in/ajaykumarn07/"
+        ],
+        "knowsAbout": ["ASP.NET Core", "C#", "SQL Server", "React", "Node.js", "MongoDB"]
+      }
+    </script>
+
+    <!-- Apply the saved or OS theme before first paint to avoid a flash -->
     <script>
-      (function() {
+      (function () {
         try {
           var saved = localStorage.getItem('theme');
           var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
           var theme = saved || (prefersDark ? 'dark' : 'light');
           document.documentElement.setAttribute('data-theme', theme);
-          var metaTheme = document.querySelector('meta[name="theme-color"]');
-          if (metaTheme) {
-            metaTheme.setAttribute('content', theme === 'dark' ? '#11120f' : '#f4f3ed');
-          }
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute('content', theme === 'dark' ? '#11120f' : '#f4f3ed');
         } catch (e) {}
       })();
     </script>
@@ -56,6 +78,20 @@
   </head>
   <body>
     <div id="root"></div>
+
+    <!-- Shown only when JavaScript is off; React replaces nothing here -->
+    <noscript>
+      <main style="max-width: 40rem; margin: 4rem auto; padding: 0 1.5rem; font-family: system-ui, sans-serif; line-height: 1.6">
+        <h1>Ajay Kumar N</h1>
+        <p>Full-stack software developer in India: ASP.NET Core, SQL Server, React and Node.js.</p>
+        <p>
+          This site needs JavaScript to display. My work is on
+          <a href="https://github.com/ajaykumarn07">GitHub</a>, and you can reach me on
+          <a href="https://www.linkedin.com/in/ajaykumarn07/">LinkedIn</a>.
+        </p>
+      </main>
+    </noscript>
+
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

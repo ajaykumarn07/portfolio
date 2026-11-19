@@ -1,15 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
-  <rect width="48" height="48" rx="8" fill="#20211e"/>
-  <text
-    x="50%"
-    y="54%"
-    dominant-baseline="middle"
-    text-anchor="middle"
-    font-family="'Space Grotesk', 'DM Sans', system-ui, sans-serif"
-    font-size="21"
-    font-weight="700"
-    letter-spacing="-2"
-    fill="#f4f3ed"
-  >AK</text>
-  <circle cx="38" cy="10" r="4" fill="#254dde"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#20211e"/>
+  <path d="M8.88 22.50L6.71 22.50L9.65 11.30L13.33 11.30L16.28 22.50L14.10 22.50L13.49 20.04L9.49 20.04L8.88 22.50M11.35 12.63L9.99 18.08L13 18.08L11.64 12.63 M18.73 22.50L16.62 22.50L16.62 11.30L18.73 11.30L18.73 15.75L19.02 15.75L22.65 11.30L25.36 11.30L20.68 16.82L25.52 22.50L22.73 22.50L19.02 17.96L18.73 17.96" fill="#f4f3ed"/>
+  <circle cx="26.5" cy="6" r="3.5" fill="#254dde"/>
 </svg>
